@@ -25,6 +25,8 @@ func main() {
 	hub := ws.NewHub()
 	wsHandler := ws.NewHandler(hub)
 
+	go hub.Run()
+
 	router.InitRouter(userHandler, wsHandler)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
