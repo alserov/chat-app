@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
+	"github.com/alseRokachev/chat-app/internal/ws"
 	"log"
+	"os"
+	"os/signal"
 
 	"github.com/alseRokachev/chat-app/db"
 	"github.com/alseRokachev/chat-app/internal/user"
@@ -18,8 +22,15 @@ func main() {
 	userSvc := user.NewService(userRep)
 	userHandler := user.NewHandler(userSvc)
 
-	router.InitRouter(userHandler)
-	err = router.Start("0.0.0.0:8001")
+	hub := ws.NewHub()
+	wsHandler := ws.NewHandler(hub)
+
+	router.InitRouter(userHandler, wsHandler)
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	err = router.Start(ctx, "0.0.0.0:8001")
 	if err != nil {
 		log.Fatal(err)
 	}
