@@ -19,7 +19,7 @@ func main() {
 	userHandler := user.NewHandler(userSvc)
 
 	router.InitRouter(userHandler)
-	err = router.Start("0.0.0.0:8080")
+	err = router.Start("0.0.0.0:8001")
 	if err != nil {
 		log.Fatal(err)
 	}
